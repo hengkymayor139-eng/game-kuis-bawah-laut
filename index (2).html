@@ -1,0 +1,1262 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kuis IPA Bawah Laut - Jelajahi Samudra!</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Quicksand untuk nuansa game ramah anak -->
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600;700;900&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Quicksand', sans-serif;
+            background: linear-gradient(180deg, #1e40af 0%, #1e3a8a 50%, #0f172a 100%);
+            overflow-x: hidden;
+            transition: background 1.5s ease-in-out;
+        }
+
+        /* Efek Pancaran Sinar Matahari Bawah Air */
+        .sun-rays {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 250px;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0) 70%);
+            clip-path: polygon(0 0, 100% 0, 85% 100%, 30% 100%);
+            pointer-events: none;
+            z-index: 1;
+            animation: shimmer 6s infinite alternate ease-in-out;
+        }
+
+        @keyframes shimmer {
+            0% { opacity: 0.7; transform: scaleX(1); }
+            100% { opacity: 1; transform: scaleX(1.1); }
+        }
+
+        /* Animasi Gelembung Udara */
+        .bubble {
+            position: absolute;
+            bottom: -50px;
+            background-color: rgba(255, 255, 255, 0.25);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            border-radius: 50%;
+            pointer-events: none;
+            box-shadow: inset 0 2px 4px rgba(255, 255, 255, 0.4), 0 2px 8px rgba(255, 255, 255, 0.1);
+            animation: floatUp 8s infinite linear;
+        }
+
+        @keyframes floatUp {
+            0% {
+                transform: translateY(0) translateX(0) scale(1);
+                opacity: 0;
+            }
+            10% {
+                opacity: 0.6;
+            }
+            90% {
+                opacity: 0.6;
+            }
+            100% {
+                transform: translateY(-115vh) translateX(60px) scale(0.8);
+                opacity: 0;
+            }
+        }
+
+        /* Animasi Mengambang Biota Laut */
+        .float-animation {
+            animation: gentleFloat 6s ease-in-out infinite;
+        }
+        
+        .float-reverse {
+            animation: gentleFloatReverse 7s ease-in-out infinite;
+        }
+
+        @keyframes gentleFloat {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-15px) rotate(3deg); }
+        }
+
+        @keyframes gentleFloatReverse {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(12px) rotate(-3deg); }
+        }
+
+        /* Animasi Gerak Ikan & Kapal Selam */
+        .fish-swim {
+            animation: swimLeftToRight 18s infinite linear;
+        }
+
+        .submarine-cruise {
+            animation: swimRightToLeft 28s infinite linear;
+        }
+
+        .jellyfish-bob {
+            animation: bobbing 5s infinite ease-in-out;
+        }
+
+        @keyframes swimLeftToRight {
+            0% { left: -150px; transform: scaleX(1); }
+            49% { transform: scaleX(1); }
+            50% { left: 100%; transform: scaleX(-1); }
+            99% { transform: scaleX(-1); }
+            100% { left: -150px; transform: scaleX(1); }
+        }
+
+        @keyframes swimRightToLeft {
+            0% { right: -200px; transform: translateY(0px); }
+            50% { transform: translateY(-25px); }
+            100% { right: 110%; transform: translateY(0px); }
+        }
+
+        @keyframes bobbing {
+            0%, 100% { transform: translateY(0) scale(1); }
+            50% { transform: translateY(-25px) scale(1.05); }
+        }
+
+        /* Gaya Khusus untuk Bioluminesensi di Zona Sulit */
+        .bioluminescence-glow {
+            box-shadow: 0 0 15px rgba(34, 211, 238, 0.4);
+            text-shadow: 0 0 8px rgba(34, 211, 238, 0.6);
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0f172a;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #0ea5e9;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body class="min-h-screen relative text-white flex flex-col justify-between overflow-x-hidden" id="game-body">
+
+    <!-- Efek Sinar Matahari Bawah Air -->
+    <div class="sun-rays"></div>
+
+    <!-- Container Gelembung Air Dinamis -->
+    <div id="bubble-container" class="absolute inset-0 overflow-hidden pointer-events-none z-0"></div>
+
+    <!-- Hiasan Animasi Bawah Laut -->
+    <!-- Ubur-ubur Kiri -->
+    <div class="absolute left-6 top-1/4 w-16 h-24 opacity-40 jellyfish-bob pointer-events-none z-10 hidden md:block">
+        <svg viewBox="0 0 100 150" class="w-full h-full fill-cyan-400">
+            <path d="M10 50 C 10 10, 90 10, 90 50 C 90 60, 10 60, 10 50 Z" />
+            <path d="M25 55 Q 20 100, 30 140" stroke="rgba(34, 211, 238, 0.7)" stroke-width="4" fill="none" />
+            <path d="M50 55 Q 50 110, 45 145" stroke="rgba(34, 211, 238, 0.7)" stroke-width="4" fill="none" />
+            <path d="M75 55 Q 80 100, 70 140" stroke="rgba(34, 211, 238, 0.7)" stroke-width="4" fill="none" />
+        </svg>
+    </div>
+
+    <!-- Kapal Selam Kuning -->
+    <div class="absolute submarine-cruise top-1/3 w-32 h-20 opacity-30 pointer-events-none z-10">
+        <svg viewBox="0 0 200 120" class="w-full h-full fill-yellow-400">
+            <rect x="50" y="40" width="100" height="50" rx="25" />
+            <rect x="90" y="20" width="20" height="25" fill="#facc15" />
+            <path d="M 100 10 L 105 10 L 105 20 L 100 20 Z" fill="#3b82f6" />
+            <circle cx="80" cy="65" r="10" fill="#1d4ed8" />
+            <circle cx="120" cy="65" r="10" fill="#1d4ed8" />
+            <!-- Baling-baling -->
+            <polygon points="150,55 165,40 165,90 150,75" fill="#ca8a04" />
+        </svg>
+    </div>
+
+    <!-- Paus Biru Besar yang Mengapung Lembut -->
+    <div class="absolute left-10 bottom-16 w-44 h-28 opacity-25 float-animation pointer-events-none z-10 hidden lg:block">
+        <svg viewBox="0 0 200 100" class="w-full h-full fill-blue-400">
+            <path d="M20 50 C20 10, 150 10, 180 40 C190 45, 200 35, 195 25 C190 15, 185 20, 180 25 C160 20, 150 20, 140 25 C120 20, 80 25, 60 35 C40 45, 20 40, 20 50 Z" />
+            <path d="M20 50 C10 55, 5 60, 2 55 C0 50, 5 45, 15 48 Z" />
+            <path d="M120 50 C130 65, 140 65, 135 50 Z" fill="#2563eb" />
+        </svg>
+    </div>
+
+    <!-- Ikan Warna-Warni Berenang -->
+    <div class="absolute fish-swim bottom-1/4 w-12 h-8 opacity-45 pointer-events-none z-10">
+        <svg viewBox="0 0 100 60" class="w-full h-full fill-orange-400">
+            <path d="M10 30 C 30 10, 70 10, 90 30 C 70 50, 30 50, 10 30" />
+            <polygon points="10,30 -5,15 -5,45" />
+            <circle cx="75" cy="25" r="4" fill="white" />
+            <circle cx="76" cy="25" r="2" fill="black" />
+        </svg>
+    </div>
+
+    <!-- Header Aplikasi -->
+    <header class="w-full p-4 md:p-6 flex justify-between items-center z-20 bg-opacity-30 bg-blue-950 backdrop-blur-md border-b border-blue-800">
+        <div class="flex items-center gap-3">
+            <div class="p-2.5 bg-sky-500 rounded-full shadow-lg shadow-sky-500/50 animate-pulse">
+                <!-- SVG Ikan Kecil Logo -->
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+                </svg>
+            </div>
+            <div>
+                <h1 class="text-xl md:text-2xl font-black tracking-wider text-cyan-300 drop-shadow">OCEAN QUIZ 2.0</h1>
+                <p class="text-xs text-sky-200">Kuis Edukasi & Konservasi Laut</p>
+            </div>
+        </div>
+        <div class="flex items-center gap-2">
+            <!-- Tombol Pengaturan Suara -->
+            <button id="btn-sound" class="p-2.5 bg-blue-850 hover:bg-blue-700 active:scale-95 rounded-xl border border-blue-600 text-white transition-all shadow-md flex items-center gap-1.5 text-xs md:text-sm font-semibold">
+                <span id="sound-icon">🔊</span> Musik & Efek: ON
+            </button>
+        </div>
+    </header>
+
+    <!-- Konten Utama (Wrapper Game) -->
+    <main class="flex-grow flex items-center justify-center p-4 md:p-8 z-20">
+        <div class="w-full max-w-2xl bg-slate-900/85 border-2 border-cyan-500/40 backdrop-blur-xl rounded-3xl p-6 md:p-8 shadow-2xl relative overflow-hidden transition-all duration-1000">
+            
+            <!-- Glow Effect Background -->
+            <div id="glow-light-left" class="absolute -top-24 -left-24 w-48 h-48 bg-cyan-500 rounded-full filter blur-[100px] opacity-25 transition-colors duration-1000"></div>
+            <div id="glow-light-right" class="absolute -bottom-24 -right-24 w-48 h-48 bg-blue-500 rounded-full filter blur-[100px] opacity-25 transition-colors duration-1000"></div>
+
+            <!-- SECTION 1: MENU UTAMA -->
+            <div id="section-menu" class="space-y-6 text-center py-4">
+                <div class="space-y-3">
+                    <span class="px-4 py-1.5 bg-cyan-500/20 text-cyan-300 border border-cyan-500/30 rounded-full text-xs font-bold tracking-widest uppercase">Edisi Penjelajah Muda</span>
+                    <h2 class="text-3xl md:text-5xl font-black text-white leading-tight">Jelajahi Misteri<br><span class="text-cyan-400 drop-shadow-[0_2px_10px_rgba(34,211,238,0.4)]">Kedalaman Lautan!</span></h2>
+                    <p class="text-gray-300 max-w-md mx-auto text-sm md:text-base leading-relaxed">
+                        Selesaikan 20 soal IPA interaktif bertema samudra. Hadapi tantangan kedalaman saat kamu menyelam dari level <span class="text-green-400 font-bold">Mudah</span>, <span class="text-yellow-400 font-bold">Sedang</span>, hingga <span class="text-red-400 font-bold">Sulit</span>!
+                    </p>
+                </div>
+
+                <!-- Karakter Maskot Menu Utama -->
+                <div class="flex justify-center py-2">
+                    <div class="relative w-28 h-28 bg-blue-600/20 border-2 border-cyan-400/40 rounded-full flex items-center justify-center float-animation">
+                        <!-- Gurita Imut SVG -->
+                        <svg viewBox="0 0 100 100" class="w-20 h-20 fill-pink-500">
+                            <ellipse cx="50" cy="45" rx="30" ry="25" />
+                            <circle cx="40" cy="40" r="4" fill="white" />
+                            <circle cx="40" cy="40" r="2" fill="black" />
+                            <circle cx="60" cy="40" r="4" fill="white" />
+                            <circle cx="60" cy="40" r="2" fill="black" />
+                            <path d="M46 55 Q50 58, 54 55" stroke="black" stroke-width="2" fill="none" />
+                            <!-- Tentakel -->
+                            <path d="M25 65 Q 15 85, 25 95" stroke="#ec4899" stroke-width="6" stroke-linecap="round" fill="none" />
+                            <path d="M40 68 Q 35 90, 45 95" stroke="#ec4899" stroke-width="6" stroke-linecap="round" fill="none" />
+                            <path d="M60 68 Q 65 90, 55 95" stroke="#ec4899" stroke-width="6" stroke-linecap="round" fill="none" />
+                            <path d="M75 65 Q 85 85, 75 95" stroke="#ec4899" stroke-width="6" stroke-linecap="round" fill="none" />
+                        </svg>
+                        <div class="absolute -top-1 -right-1 bg-yellow-400 text-slate-950 font-bold text-xs px-2.5 py-1 rounded-full rotate-12 shadow">
+                            BARU 🌟
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Input Nama Pemain -->
+                <div class="max-w-xs mx-auto space-y-2">
+                    <label for="player-name" class="block text-xs font-semibold text-cyan-300 text-left uppercase tracking-wider">Masukkan Nama Penyelam:</label>
+                    <input type="text" id="player-name" placeholder="Nama Penyelam..." class="w-full px-4 py-3 bg-blue-950/60 border border-blue-700/50 rounded-2xl text-white placeholder-blue-300/50 focus:outline-none focus:ring-2 focus:ring-cyan-400 text-center text-lg font-bold transition" maxlength="15">
+                </div>
+
+                <!-- Tombol Mulai -->
+                <div class="pt-2">
+                    <button id="btn-start" class="w-full max-w-xs py-4 px-8 bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 active:scale-95 text-white font-black text-xl rounded-2xl shadow-lg shadow-cyan-500/30 hover:shadow-cyan-400/40 transition duration-300 transform">
+                        MULAI PENYELAMAN
+                    </button>
+                </div>
+
+                <!-- High Score List -->
+                <div class="border-t border-blue-900/50 pt-4 mt-6 max-w-md mx-auto">
+                    <h3 class="text-xs font-bold uppercase tracking-widest text-cyan-400 mb-2">🏆 Papan Peringkat Penyelam Terbaik</h3>
+                    <div id="leaderboard-preview" class="text-sm space-y-1 text-gray-300">
+                        <!-- Diisi via JS -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- SECTION 2: PERMAINAN (KUIS) -->
+            <div id="section-quiz" class="hidden space-y-6">
+                <!-- Info Bar atas -->
+                <div class="flex flex-wrap justify-between items-center gap-3 border-b border-blue-900/50 pb-4">
+                    <div class="flex items-center gap-2">
+                        <span id="badge-level" class="px-3 py-1 bg-green-500/20 text-green-300 border border-green-500/30 rounded-full text-xs font-bold tracking-wider uppercase">Mudah</span>
+                        <span class="text-blue-200 text-sm">Soal <strong id="current-question-num" class="text-white text-lg">1</strong> dari 20</span>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <!-- Timer Bulat -->
+                        <div class="flex items-center gap-1.5 bg-amber-500/10 border border-amber-500/30 px-3 py-1.5 rounded-xl">
+                            <span class="text-amber-400 animate-pulse">⏱️</span>
+                            <span id="timer-text" class="text-amber-300 font-black text-base min-w-[2ch]">15s</span>
+                        </div>
+                        <!-- Skor Sekarang -->
+                        <div class="bg-cyan-500/15 border border-cyan-500/30 px-3 py-1.5 rounded-xl text-cyan-300 font-bold">
+                            Skor: <span id="current-score-display" class="text-white">0</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Progress Bar visual -->
+                <div class="w-full bg-blue-950 h-3 rounded-full overflow-hidden p-0.5 border border-blue-900">
+                    <div id="quiz-progress-bar" class="bg-gradient-to-r from-cyan-400 to-sky-500 h-full w-[5%] rounded-full transition-all duration-300"></div>
+                </div>
+
+                <!-- Soal Kuis -->
+                <div class="space-y-2">
+                    <div id="depth-indicator" class="text-xs font-bold text-sky-400 tracking-wider flex items-center gap-1">
+                        <span>🌊 Kedalaman:</span> <span id="depth-value" class="text-white">Kedalaman Dangkal (Zona Terang)</span>
+                    </div>
+                    <h3 id="question-text" class="text-lg md:text-xl font-bold leading-relaxed text-white">
+                        Memuat pertanyaan...
+                    </h3>
+                </div>
+
+                <!-- Pilihan Ganda -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-3.5 pt-1" id="options-container">
+                    <!-- Template pilihan, diisi dinamis oleh JS -->
+                </div>
+
+                <!-- Pesan Feedback & Edukasi Kelautan -->
+                <div id="feedback-card" class="hidden transform translate-y-2 transition-all duration-355 rounded-2xl p-4 border flex flex-col gap-2">
+                    <div class="flex items-center gap-2">
+                        <span id="feedback-icon" class="text-xl"></span>
+                        <span id="feedback-title" class="font-bold text-base md:text-lg"></span>
+                    </div>
+                    <p id="feedback-edu-msg" class="text-xs md:text-sm text-sky-100 italic leading-relaxed"></p>
+                </div>
+
+                <!-- Navigasi Bawah / Tombol Lanjut -->
+                <div class="flex justify-end pt-2">
+                    <button id="btn-next" class="px-6 py-3 bg-cyan-600 hover:bg-cyan-500 active:scale-95 disabled:opacity-50 disabled:pointer-events-none text-white font-bold rounded-xl shadow-md transition flex items-center gap-2" disabled>
+                        Soal Berikutnya
+                        <span>➡️</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- SECTION 3: HASIL AKHIR -->
+            <div id="section-result" class="hidden text-center py-4 space-y-6">
+                <div class="space-y-2">
+                    <span class="px-4 py-1.5 bg-yellow-500/20 text-yellow-300 border border-yellow-500/30 rounded-full text-xs font-bold tracking-widest uppercase">Misi Selesai!</span>
+                    <h2 class="text-3xl md:text-4xl font-black">Petualangan Berakhir, <br><span id="result-player-name" class="text-cyan-400">Penyelam Tangguh</span>!</h2>
+                </div>
+
+                <!-- Pangkat & Penghargaan Lencana -->
+                <div class="bg-blue-950/40 p-4 border border-cyan-500/30 rounded-2xl max-w-sm mx-auto space-y-2">
+                    <p class="text-xs text-sky-300 font-bold uppercase tracking-wider">Lencana Kehormatan Penyelam:</p>
+                    <div class="flex flex-col items-center gap-1">
+                        <span id="badge-emblem" class="text-5xl animate-bounce">🏆</span>
+                        <span id="badge-title" class="text-xl font-extrabold text-yellow-400 drop-shadow">Pahlawan Samudra</span>
+                    </div>
+                </div>
+
+                <!-- Visual Bintang Penghargaan -->
+                <div class="flex justify-center gap-2 py-1 text-4xl md:text-5xl" id="stars-container">
+                    <!-- Bintang terisi via JS -->
+                </div>
+
+                <!-- Skor & Akurasi -->
+                <div class="bg-blue-950/60 rounded-3xl p-5 border border-blue-800/60 max-w-sm mx-auto space-y-3">
+                    <div>
+                        <p class="text-xs text-blue-300 font-semibold uppercase">Total Skor Kamu</p>
+                        <p class="text-5xl font-black text-cyan-400" id="final-score">100</p>
+                    </div>
+                    <div class="flex justify-around text-sm border-t border-blue-900/40 pt-3">
+                        <div>
+                            <p class="text-blue-300 text-xs">Jawaban Benar</p>
+                            <p class="text-lg font-bold text-green-400" id="final-correct">0/20</p>
+                        </div>
+                        <div>
+                            <p class="text-blue-300 text-xs">Akurasi</p>
+                            <p class="text-lg font-bold text-yellow-300" id="final-accuracy">0%</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Pesan Kelautan Edukatif -->
+                <div class="max-w-md mx-auto p-4 bg-teal-950/40 border border-teal-800/40 rounded-2xl text-teal-200 text-xs md:text-sm italic leading-relaxed">
+                    🍀 <strong>Pesan Penting:</strong> "Setiap langkah kecil kita sangat berarti bagi kelestarian laut. Mari sebarkan kuis ini ke teman-temanmu agar lebih banyak orang mengenal keindahan dan cara menjaga samudra!"
+                </div>
+
+                <!-- Tombol Navigasi Akhir -->
+                <div class="flex flex-col gap-3 justify-center pt-2 max-w-md mx-auto">
+                    <button id="btn-share" class="w-full py-3 px-6 bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-white font-bold text-base rounded-xl transition active:scale-95 shadow-md flex items-center justify-center gap-2">
+                        <span>📲</span> Salin & Bagikan Skor ke Teman!
+                    </button>
+                    <div class="flex gap-3">
+                        <button id="btn-restart" class="w-full py-3 px-6 bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white font-bold rounded-xl transition active:scale-95 shadow">
+                            Main Lagi 🔄
+                        </button>
+                        <button id="btn-back-menu" class="w-full py-3 px-6 bg-blue-950 hover:bg-blue-900 border border-blue-750 text-white font-semibold rounded-xl transition active:scale-95">
+                            Menu Utama 🏠
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Toast Notification untuk Berbagi -->
+            <div id="toast" class="fixed bottom-6 left-1/2 transform -translate-x-1/2 px-4 py-2.5 bg-emerald-500 text-white font-semibold text-sm rounded-xl shadow-lg z-50 pointer-events-none opacity-0 transition-opacity duration-300">
+                ✅ Ringkasan skor berhasil disalin! Tinggal paste ke WA/sosmed.
+            </div>
+
+        </div>
+    </main>
+
+    <!-- Footer / Hiasan Terumbu Karang SVG di Bawah Layar -->
+    <footer class="w-full relative h-16 md:h-24 z-10 select-none pointer-events-none mt-auto">
+        <svg viewBox="0 0 1440 120" class="absolute bottom-0 w-full h-full fill-blue-950" preserveAspectRatio="none">
+            <!-- Pasir Pantai Bawah Laut -->
+            <path d="M0,80 Q360,110 720,90 T1440,80 L1440,120 L0,120 Z" fill="#0f172a" />
+            <!-- Terumbu Karang & Rumput Laut Dekoratif -->
+            <!-- Karang 1 -->
+            <path d="M100,100 C90,80 110,60 120,80 C130,60 150,80 140,100" fill="#f43f5e" />
+            <path d="M250,90 Q240,60 255,40 T270,90" fill="#10b981" />
+            <path d="M260,100 Q275,70 280,50 T300,100" fill="#059669" />
+            <!-- Karang 2 -->
+            <path d="M1200,90 C1190,70 1210,50 1220,70 C1230,50 1250,70 1240,90" fill="#ec4899" />
+            <path d="M1220,100 Q1235,65 1250,45 T1270,100" fill="#a855f7" />
+            <!-- Karang Tengah -->
+            <path d="M680,100 Q690,60 705,30 T720,100" fill="#06b6d4" />
+            <path d="M710,100 Q725,50 740,70 T750,100" fill="#f59e0b" />
+        </svg>
+    </footer>
+
+    <!-- JS Logic Game -->
+    <script>
+        // DATA SOAL KUIS (20 Soal Pilihan Ganda IPA Bawah Laut)
+        const questions = [
+            // MUDAH (1-7)
+            {
+                id: 1,
+                level: "Mudah",
+                depth: "Kedalaman Dangkal (Zona Terang)",
+                question: "Apa warna air laut yang sering kita lihat?",
+                options: { A: "Merah", B: "Biru", C: "Kuning", D: "Hitam" },
+                answer: "B",
+                edu: "Warna biru laut terjadi karena molekul air laut menyerap cahaya dengan panjang gelombang merah dan memantulkan kembali cahaya biru yang indah."
+            },
+            {
+                id: 2,
+                level: "Mudah",
+                depth: "Kedalaman Dangkal (Zona Terang)",
+                question: "Mengapa air laut terasa asin?",
+                options: { A: "Karena gula", B: "Karena garam mineral", C: "Karena pasir", D: "Karena hujan" },
+                answer: "B",
+                edu: "Air laut asin karena membawa larutan garam mineral dari daratan dan batuan yang terbawa sungai menuju laut selama miliaran tahun."
+            },
+            {
+                id: 3,
+                level: "Mudah",
+                depth: "Kedalaman Dangkal (Zona Terang)",
+                question: "Hewan terbesar di laut adalah ...",
+                options: { A: "Hiu", B: "Gurita", C: "Paus biru", D: "Lumba-lumba" },
+                answer: "C",
+                edu: "Paus Biru adalah hewan terbesar di bumi, panjangnya bisa mencapai 30 meter dengan berat mencapai 180 ton!"
+            },
+            {
+                id: 4,
+                level: "Mudah",
+                depth: "Kedalaman Dangkal (Zona Terang)",
+                question: "Apa nama tumbuhan yang hidup di laut?",
+                options: { A: "Kaktus", B: "Rumput laut", C: "Mawar", D: "Pohon mangga" },
+                answer: "B",
+                edu: "Rumput laut atau alga laut adalah produsen makanan yang sangat penting bagi biota laut lainnya melalui fotosintesis."
+            },
+            {
+                id: 5,
+                level: "Mudah",
+                depth: "Kedalaman Dangkal (Zona Terang)",
+                question: "Gelombang laut biasanya terjadi karena ...",
+                options: { A: "Angin", B: "Api", C: "Batu", D: "Pasir" },
+                answer: "A",
+                edu: "Angin yang berhembus di permukaan laut mentransfer energinya ke air, menghasilkan riak yang kemudian membesar menjadi gelombang."
+            },
+            {
+                id: 6,
+                level: "Mudah",
+                depth: "Kedalaman Dangkal (Zona Terang)",
+                question: "Hewan laut yang memiliki capit adalah ...",
+                options: { A: "Kepiting", B: "Paus", C: "Hiu", D: "Penyu" },
+                answer: "A",
+                edu: "Capit pada kepiting berfungsi untuk memegang makanan, membela diri dari musuh, dan berkomunikasi dengan sesamanya."
+            },
+            {
+                id: 7,
+                level: "Mudah",
+                depth: "Kedalaman Dangkal (Zona Terang)",
+                question: "Apa kendaraan yang digunakan untuk menyelam di laut?",
+                options: { A: "Pesawat", B: "Kapal selam", C: "Mobil", D: "Kereta" },
+                answer: "B",
+                edu: "Kapal selam dilengkapi teknologi khusus tangki ballast untuk mengatur kemampuan mengapung dan menyelam hingga ke dasar laut dalam."
+            },
+            // SEDANG (8-14)
+            {
+                id: 8,
+                level: "Sedang",
+                depth: "Kedalaman Menengah (Zona Remang-remang)",
+                question: "Apa nama bagian laut yang sangat dalam dan gelap?",
+                options: { A: "Pantai", B: "Laut dangkal", C: "Laut dalam", D: "Sungai" },
+                answer: "C",
+                edu: "Zona laut dalam (Zona Abisal) tidak terjangkau sinar matahari sama sekali, sehingga kondisinya gelap gulita, dingin, dan bertekanan tinggi."
+            },
+            {
+                id: 9,
+                level: "Sedang",
+                depth: "Kedalaman Menengah (Zona Remang-remang)",
+                question: "Indonesia disebut negara maritim karena ...",
+                options: { A: "Banyak gunung", B: "Banyak laut", C: "Banyak hutan", D: "Banyak sawah" },
+                answer: "B",
+                edu: "Indonesia memiliki wilayah perairan laut yang jauh lebih luas daripada daratannya, kaya akan sumber daya ikan dan terumbu karang."
+            },
+            {
+                id: 10,
+                level: "Sedang",
+                depth: "Kedalaman Menengah (Zona Remang-remang)",
+                question: "Pasang surut air laut dipengaruhi oleh ...",
+                options: { A: "Bulan dan matahari", B: "Pohon", C: "Gunung", D: "Angin saja" },
+                answer: "A",
+                edu: "Gravitasi Bulan dan Matahari menarik air laut di Bumi, menyebabkan fenomena pasang (naik) dan surut (turun) air laut secara teratur."
+            },
+            {
+                id: 11,
+                level: "Sedang",
+                depth: "Kedalaman Menengah (Zona Remang-remang)",
+                question: "Apa fungsi terumbu karang?",
+                options: { A: "Tempat hidup hewan laut", B: "Tempat parkir kapal", C: "Membuat jalan", D: "Membuat pasir" },
+                answer: "A",
+                edu: "Terumbu karang adalah rumah bagi 25% biota laut. Mereka juga melindungi pantai dari hantaman ombak besar."
+            },
+            {
+                id: 12,
+                level: "Sedang",
+                depth: "Kedalaman Menengah (Zona Remang-remang)",
+                question: "Sampah plastik di laut dapat ...",
+                options: { A: "Membantu ikan", B: "Merusak laut", C: "Membuat laut bersih", D: "Membuat air manis" },
+                answer: "B",
+                edu: "Plastik butuh ratusan tahun untuk terurai. Plastik yang tertelan hewan laut seperti penyu dapat menyebabkan kematian."
+            },
+            {
+                id: 13,
+                level: "Sedang",
+                depth: "Kedalaman Menengah (Zona Remang-remang)",
+                question: "Apa nama hewan laut yang berbentuk bintang?",
+                options: { A: "Ubur-ubur", B: "Bintang laut", C: "Paus", D: "Gurita" },
+                answer: "B",
+                edu: "Bintang laut bukan ikan asli, melainkan echinodermata. Mereka tidak memiliki darah atau otak, melainkan sistem air pembuluh darah."
+            },
+            {
+                id: 14,
+                level: "Sedang",
+                depth: "Kedalaman Menengah (Zona Remang-remang)",
+                question: "Nelayan biasanya pergi ke laut untuk ...",
+                options: { A: "Bermain bola", B: "Menanam pohon", C: "Menangkap ikan", D: "Menggambar" },
+                answer: "C",
+                edu: "Nelayan tradisional memanfaatkan pengetahuan alam seperti arah angin dan rasi bintang untuk berlayar menangkap ikan."
+            },
+            // SULIT (15-20)
+            {
+                id: 15,
+                level: "Sulit",
+                depth: "Zona Misterius Abisal (Laut Dalam)",
+                question: "Apa nama samudra terbesar di dunia?",
+                options: { A: "Samudra Hindia", B: "Samudra Atlantik", C: "Samudra Pasifik", D: "Samudra Arktik" },
+                answer: "C",
+                edu: "Samudra Pasifik menutupi lebih dari 30% permukaan Bumi, menjadikannya samudra terluas dan terdalam di planet kita."
+            },
+            {
+                id: 16,
+                level: "Sulit",
+                depth: "Zona Misterius Abisal (Laut Dalam)",
+                question: "Hewan laut yang bisa menyemprotkan tinta adalah ...",
+                options: { A: "Penyu", B: "Gurita", C: "Paus", D: "Hiu" },
+                answer: "B",
+                edu: "Gurita (serta cumi-cumi) menggunakan tinta gelap berbahan melanin untuk membutakan pandangan predator dan melarikan diri."
+            },
+            {
+                id: 17,
+                level: "Sulit",
+                depth: "Zona Misterius Abisal (Laut Dalam)",
+                question: "Apa nama bencana besar yang berasal dari laut?",
+                options: { A: "Tornado", B: "Gempa darat", C: "Tsunami", D: "Longsor" },
+                answer: "C",
+                edu: "Tsunami adalah gelombang raksasa akibat perpindahan volume air laut secara tiba-tiba, biasanya karena gempa bumi bawah laut."
+            },
+            {
+                id: 18,
+                level: "Sulit",
+                depth: "Zona Misterius Abisal (Laut Dalam)",
+                question: "Fitoplankton penting karena ...",
+                options: { A: "Menghasilkan oksigen", B: "Membuat ombak", C: "Membuat hujan", D: "Membuat pasir" },
+                answer: "A",
+                edu: "Satu dari setiap dua napas manusia disokong oleh oksigen yang dihasilkan fitoplankton di laut melalui proses fotosintesis!"
+            },
+            {
+                id: 19,
+                level: "Sulit",
+                depth: "Zona Misterius Abisal (Laut Dalam)",
+                question: "Apa yang harus kita lakukan untuk menjaga laut?",
+                options: { A: "Buang sampah ke laut", B: "Menangkap semua ikan", C: "Mengurangi plastik", D: "Merusak terumbu karang" },
+                answer: "C",
+                edu: "Mengurangi sampah plastik sekali pakai adalah aksi nyata paling efektif untuk melindungi jutaan biota laut dari bahaya polusi."
+            },
+            {
+                id: 20,
+                level: "Sulit",
+                depth: "Zona Misterius Abisal (Laut Dalam)",
+                question: "Apa nama alat yang digunakan penyelam untuk bernapas di bawah laut?",
+                options: { A: "Helm motor", B: "Tabung oksigen", C: "Payung", D: "Kompas" },
+                answer: "B",
+                edu: "Penyelam SCUBA menggunakan tabung udara terkompresi (sering disebut tabung oksigen) yang terhubung ke regulator napas untuk bertahan di bawah air."
+            }
+        ];
+
+        // STATE GAME
+        let currentQuestionIndex = 0;
+        let score = 0;
+        let correctAnswersCount = 0;
+        let timer = null;
+        let timeLeft = 15;
+        let hasAnswered = false;
+        let isSoundOn = true;
+        let playerName = "Penyelam Tangguh";
+
+        // AUDIO SYNTHESIZER
+        let audioCtx = null;
+        let ambientOsc = null;
+        let ambientGain = null;
+        let whiteNoiseNode = null;
+        let ambientFilter = null;
+
+        function getAudioContext() {
+            if (!audioCtx) {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            }
+            if (audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+            return audioCtx;
+        }
+
+        // Sintesis Suara Deru Ombak Alami (Ambient Wave Synth)
+        function startAmbientSea() {
+            if (!isSoundOn) return;
+            try {
+                const ctx = getAudioContext();
+                
+                // Hentikan jika sebelumnya ada
+                stopAmbientSea();
+
+                // Membuat noise buffer untuk simulasi deru laut
+                const bufferSize = 4 * ctx.sampleRate;
+                const noiseBuffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
+                const output = noiseBuffer.getChannelData(0);
+                for (let i = 0; i < bufferSize; i++) {
+                    output[i] = Math.random() * 2 - 1;
+                }
+
+                whiteNoiseNode = ctx.createBufferSource();
+                whiteNoiseNode.buffer = noiseBuffer;
+                whiteNoiseNode.loop = true;
+
+                // Lowpass filter untuk melembutkan suara angin/air
+                ambientFilter = ctx.createBiquadFilter();
+                ambientFilter.type = 'lowpass';
+                ambientFilter.frequency.setValueAtTime(350, ctx.currentTime);
+
+                ambientGain = ctx.createGain();
+                ambientGain.gain.setValueAtTime(0.04, ctx.currentTime); // Volume sangat lembut di latar belakang
+
+                // LFO (Low Frequency Oscillator) untuk mensimulasikan gelombang ombak yang naik turun (pasang-surut)
+                ambientOsc = ctx.createOscillator();
+                ambientOsc.type = 'sine';
+                ambientOsc.frequency.setValueAtTime(0.08, ctx.currentTime); // Frekuensi lambat sekali (12,5 detik per putaran)
+
+                const lfoGain = ctx.createGain();
+                lfoGain.gain.setValueAtTime(200, ctx.currentTime); // modulasi filter dari 150Hz ke 550Hz
+
+                // Sambungkan LFO ke frekuensi filter
+                ambientOsc.connect(lfoGain);
+                lfoGain.connect(ambientFilter.frequency);
+
+                // Hubungkan audio graph
+                whiteNoiseNode.connect(ambientFilter);
+                ambientFilter.connect(ambientGain);
+                ambientGain.connect(ctx.destination);
+
+                // Jalankan suara
+                whiteNoiseNode.start(0);
+                ambientOsc.start(0);
+            } catch (e) {
+                console.warn("Ambient Audio Error:", e);
+            }
+        }
+
+        function stopAmbientSea() {
+            try {
+                if (whiteNoiseNode) {
+                    whiteNoiseNode.stop();
+                    whiteNoiseNode.disconnect();
+                    whiteNoiseNode = null;
+                }
+                if (ambientOsc) {
+                    ambientOsc.stop();
+                    ambientOsc.disconnect();
+                    ambientOsc = null;
+                }
+                if (ambientGain) {
+                    ambientGain.disconnect();
+                    ambientGain = null;
+                }
+            } catch(e) {}
+        }
+
+        // Efek Suara Benar (Arpeggio Nada Naik Ceria)
+        function playCorrectSound() {
+            if (!isSoundOn) return;
+            try {
+                const ctx = getAudioContext();
+                const now = ctx.currentTime;
+                const freqs = [523.25, 659.25, 783.99, 1046.50]; // C5, E5, G5, C6
+                freqs.forEach((freq, index) => {
+                    const osc = ctx.createOscillator();
+                    const gain = ctx.createGain();
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(freq, now + index * 0.08);
+                    gain.gain.setValueAtTime(0.12, now + index * 0.08);
+                    gain.gain.exponentialRampToValueAtTime(0.001, now + index * 0.08 + 0.35);
+                    osc.connect(gain);
+                    gain.connect(ctx.destination);
+                    osc.start(now + index * 0.08);
+                    osc.stop(now + index * 0.08 + 0.35);
+                });
+            } catch (e) {}
+        }
+
+        // Efek Suara Salah (Bunyi Gelombang Frekuensi Rendah)
+        function playIncorrectSound() {
+            if (!isSoundOn) return;
+            try {
+                const ctx = getAudioContext();
+                const now = ctx.currentTime;
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
+                
+                osc.type = 'sawtooth';
+                osc.frequency.setValueAtTime(140, now);
+                osc.frequency.linearRampToValueAtTime(70, now + 0.45);
+                
+                gain.gain.setValueAtTime(0.18, now);
+                gain.gain.linearRampToValueAtTime(0.001, now + 0.45);
+                
+                osc.connect(gain);
+                gain.connect(ctx.destination);
+                
+                osc.start(now);
+                osc.stop(now + 0.45);
+            } catch (e) {}
+        }
+
+        // Efek Suara Menang / Fanfare Penyelamat Kelautan
+        function playVictorySound() {
+            if (!isSoundOn) return;
+            try {
+                const ctx = getAudioContext();
+                const now = ctx.currentTime;
+                const notes = [261.63, 329.63, 392.00, 523.25, 659.25, 783.99, 1046.50, 1318.51];
+                notes.forEach((freq, index) => {
+                    const osc = ctx.createOscillator();
+                    const gain = ctx.createGain();
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(freq, now + index * 0.12);
+                    gain.gain.setValueAtTime(0.15, now + index * 0.12);
+                    gain.gain.exponentialRampToValueAtTime(0.01, now + index * 0.12 + 0.6);
+                    osc.connect(gain);
+                    gain.connect(ctx.destination);
+                    osc.start(now + index * 0.12);
+                    osc.stop(now + index * 0.12 + 0.6);
+                });
+            } catch (e) {}
+        }
+
+        // Efek Suara Letupan Gelembung Acak
+        function playAmbientBubbleSound() {
+            if (!isSoundOn) return;
+            try {
+                const ctx = getAudioContext();
+                const now = ctx.currentTime;
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
+                osc.type = 'sine';
+                const startFreq = 220 + Math.random() * 320;
+                osc.frequency.setValueAtTime(startFreq, now);
+                osc.frequency.exponentialRampToValueAtTime(startFreq * 2.8, now + 0.12);
+                gain.gain.setValueAtTime(0.04, now);
+                gain.gain.exponentialRampToValueAtTime(0.001, now + 0.12);
+                osc.connect(gain);
+                gain.connect(ctx.destination);
+                osc.start(now);
+                osc.stop(now + 0.12);
+            } catch (e) {}
+        }
+
+        setInterval(() => {
+            if (isSoundOn && Math.random() > 0.4) {
+                playAmbientBubbleSound();
+            }
+        }, 3500);
+
+        // GENERATOR GELEMBUNG UDARA
+        const bubbleContainer = document.getElementById('bubble-container');
+        function createBubble() {
+            const bubble = document.createElement('div');
+            bubble.classList.add('bubble');
+            const size = Math.random() * 22 + 8;
+            bubble.style.width = `${size}px`;
+            bubble.style.height = `${size}px`;
+            bubble.style.left = `${Math.random() * 100}%`;
+            const duration = Math.random() * 6 + 6;
+            bubble.style.animationDuration = `${duration}s`;
+            bubbleContainer.appendChild(bubble);
+            setTimeout(() => { bubble.remove(); }, duration * 1000);
+        }
+        setInterval(createBubble, 300);
+
+        // DOM ELEMENTS
+        const sectionMenu = document.getElementById('section-menu');
+        const sectionQuiz = document.getElementById('section-quiz');
+        const sectionResult = document.getElementById('section-result');
+        const btnStart = document.getElementById('btn-start');
+        const btnNext = document.getElementById('btn-next');
+        const btnRestart = document.getElementById('btn-restart');
+        const btnBackMenu = document.getElementById('btn-back-menu');
+        const btnSound = document.getElementById('btn-sound');
+        const btnShare = document.getElementById('btn-share');
+        const soundIcon = document.getElementById('sound-icon');
+        const inputPlayerName = document.getElementById('player-name');
+        
+        const qBadgeLevel = document.getElementById('badge-level');
+        const qCurrentNum = document.getElementById('current-question-num');
+        const qTimerText = document.getElementById('timer-text');
+        const qScoreDisplay = document.getElementById('current-score-display');
+        const qProgressBar = document.getElementById('quiz-progress-bar');
+        const qQuestionText = document.getElementById('question-text');
+        const qOptionsContainer = document.getElementById('options-container');
+        const depthValue = document.getElementById('depth-value');
+        const gameBody = document.getElementById('game-body');
+        const glowLightLeft = document.getElementById('glow-light-left');
+        const glowLightRight = document.getElementById('glow-light-right');
+        
+        const feedbackCard = document.getElementById('feedback-card');
+        const feedbackIcon = document.getElementById('feedback-icon');
+        const feedbackTitle = document.getElementById('feedback-title');
+        const feedbackEduMsg = document.getElementById('feedback-edu-msg');
+        
+        const resPlayerName = document.getElementById('result-player-name');
+        const resStarsContainer = document.getElementById('stars-container');
+        const resFinalScore = document.getElementById('final-score');
+        const resFinalCorrect = document.getElementById('final-correct');
+        const resFinalAccuracy = document.getElementById('final-accuracy');
+        const leaderboardPreview = document.getElementById('leaderboard-preview');
+        const badgeEmblem = document.getElementById('badge-emblem');
+        const badgeTitle = document.getElementById('badge-title');
+        const toast = document.getElementById('toast');
+
+        // PAPAN PERINGKAT
+        function updateLeaderboard() {
+            const rawData = localStorage.getItem('ocean_quiz_scores');
+            let data = rawData ? JSON.parse(rawData) : [];
+            data.sort((a, b) => b.score - a.score);
+            data = data.slice(0, 5);
+
+            if (data.length === 0) {
+                leaderboardPreview.innerHTML = `<p class="text-xs text-cyan-300/80 italic">Belum ada rekor penyelaman baru. Kamu bisa jadi pemecah rekor pertama!</p>`;
+            } else {
+                leaderboardPreview.innerHTML = data.map((player, idx) => {
+                    let medal = "🔹";
+                    if (idx === 0) medal = "🥇";
+                    else if (idx === 1) medal = "🥈";
+                    else if (idx === 2) medal = "🥉";
+                    return `
+                        <div class="flex justify-between items-center bg-blue-950/50 px-3 py-2 rounded-xl border border-blue-900/40">
+                            <span class="font-bold text-xs md:text-sm text-left truncate max-w-[170px]">${medal} ${idx + 1}. ${player.name}</span>
+                            <span class="font-black text-cyan-400 text-xs md:text-sm">${player.score} pts</span>
+                        </div>
+                    `;
+                }).join('');
+            }
+        }
+
+        function saveScoreToLeaderboard(name, score) {
+            const rawData = localStorage.getItem('ocean_quiz_scores');
+            let data = rawData ? JSON.parse(rawData) : [];
+            data.push({ name: name, score: score, date: new Date().toLocaleDateString('id-ID') });
+            localStorage.setItem('ocean_quiz_scores', JSON.stringify(data));
+            updateLeaderboard();
+        }
+
+        // AMBIENT DEPTH TRANSITION (Mengubah gradasi warna sesuai tingkat kesulitan)
+        function updateOceanDepthVisuals(level) {
+            if (level === "Mudah") {
+                gameBody.style.background = "linear-gradient(180deg, #38bdf8 0%, #1d4ed8 40%, #0f172a 100%)";
+                glowLightLeft.style.backgroundColor = "#22d3ee"; // Cyan
+                glowLightRight.style.backgroundColor = "#3b82f6"; // Blue
+                depthValue.innerText = "Kedalaman Dangkal (Zona Terang Sunyi)";
+            } else if (level === "Sedang") {
+                gameBody.style.background = "linear-gradient(180deg, #1d4ed8 0%, #0f172a 60%, #020617 100%)";
+                glowLightLeft.style.backgroundColor = "#3b82f6"; // Blue
+                glowLightRight.style.backgroundColor = "#6366f1"; // Indigo
+                depthValue.innerText = "Kedalaman Menengah (Zona Remang Twilight)";
+            } else if (level === "Sulit") {
+                gameBody.style.background = "linear-gradient(180deg, #0f172a 0%, #030712 50%, #000000 100%)";
+                glowLightLeft.style.backgroundColor = "#06b6d4"; // Glow Cyan
+                glowLightRight.style.backgroundColor = "#a855f7"; // Deep Violet
+                depthValue.innerText = "Zona Misterius Abisal (Laut Dalam Tanpa Cahaya)";
+            }
+        }
+
+        // LOAD SOAL
+        function loadQuestion() {
+            hasAnswered = false;
+            clearInterval(timer);
+            btnNext.disabled = true;
+            feedbackCard.classList.add('hidden');
+            
+            const currentQ = questions[currentQuestionIndex];
+            
+            // Atur gaya kustom kedalaman & level
+            qBadgeLevel.innerText = currentQ.level;
+            qCurrentNum.innerText = currentQ.id;
+            updateOceanDepthVisuals(currentQ.level);
+            
+            if (currentQ.level === "Mudah") {
+                qBadgeLevel.className = "px-3 py-1 bg-green-500/20 text-green-300 border border-green-500/40 rounded-full text-xs font-bold tracking-wider uppercase";
+                timeLeft = 15;
+            } else if (currentQ.level === "Sedang") {
+                qBadgeLevel.className = "px-3 py-1 bg-yellow-500/20 text-yellow-300 border border-yellow-500/40 rounded-full text-xs font-bold tracking-wider uppercase";
+                timeLeft = 20;
+            } else {
+                qBadgeLevel.className = "px-3 py-1 bg-cyan-500/20 text-cyan-300 border border-cyan-500/40 rounded-full text-xs font-bold tracking-wider uppercase bioluminescence-glow animate-pulse";
+                timeLeft = 25;
+            }
+            
+            qTimerText.innerText = `${timeLeft}s`;
+            
+            // Progress Bar
+            const progressPercent = ((currentQuestionIndex + 1) / questions.length) * 100;
+            qProgressBar.style.width = `${progressPercent}%`;
+            
+            // Set Soal
+            qQuestionText.innerHTML = `<span class="text-cyan-300 text-xs block font-bold tracking-wider uppercase">${currentQ.level} • ${currentQ.depth}</span> ${currentQ.question}`;
+            
+            // Render Pilihan Jawaban
+            qOptionsContainer.innerHTML = '';
+            for (const [key, value] of Object.entries(currentQ.options)) {
+                const btn = document.createElement('button');
+                
+                let btnStyle = "option-btn text-left p-4 rounded-2xl border-2 border-blue-900/60 bg-blue-950/40 hover:bg-blue-900/60 hover:border-cyan-500/50 transition-all duration-200 active:scale-98 flex items-center gap-3 w-full group";
+                if (currentQ.level === "Sulit") {
+                    btnStyle += " hover:shadow-[0_0_12px_rgba(34,211,238,0.3)]";
+                }
+                
+                btn.className = btnStyle;
+                btn.innerHTML = `
+                    <span class="w-8 h-8 rounded-lg bg-blue-900/80 group-hover:bg-blue-800 flex items-center justify-center font-bold text-cyan-300 text-sm flex-shrink-0 transition-colors">${key}</span>
+                    <span class="text-sm md:text-base font-semibold text-gray-100">${value}</span>
+                `;
+                btn.addEventListener('click', () => handleAnswer(key, btn));
+                qOptionsContainer.appendChild(btn);
+            }
+            
+            startTimer();
+        }
+
+        // TIMER
+        function startTimer() {
+            timer = setInterval(() => {
+                timeLeft--;
+                qTimerText.innerText = `${timeLeft}s`;
+                
+                if (timeLeft <= 5) {
+                    qTimerText.parentElement.classList.add('bg-red-500/20', 'border-red-500/40', 'text-red-400');
+                    qTimerText.parentElement.classList.remove('bg-amber-500/10', 'border-amber-500/30', 'text-amber-300');
+                } else {
+                    qTimerText.parentElement.classList.remove('bg-red-500/20', 'border-red-500/40', 'text-red-400');
+                    qTimerText.parentElement.classList.add('bg-amber-500/10', 'border-amber-500/30', 'text-amber-300');
+                }
+                
+                if (timeLeft <= 0) {
+                    clearInterval(timer);
+                    handleTimeout();
+                }
+            }, 1000);
+        }
+
+        // JAWABAN DIPILIH
+        function handleAnswer(selectedOption, selectedButton) {
+            if (hasAnswered) return;
+            hasAnswered = true;
+            clearInterval(timer);
+            
+            const currentQ = questions[currentQuestionIndex];
+            const isCorrect = selectedOption === currentQ.answer;
+            
+            const optionButtons = qOptionsContainer.querySelectorAll('button');
+            optionButtons.forEach(btn => {
+                btn.disabled = true;
+                btn.classList.add('opacity-50');
+            });
+            
+            selectedButton.classList.remove('opacity-50');
+            
+            if (isCorrect) {
+                playCorrectSound();
+                selectedButton.classList.add('bg-green-500/25', 'border-green-400', 'text-green-300');
+                selectedButton.querySelector('span').classList.add('bg-green-600', 'text-white');
+                
+                // Tambah skor dinamis (Mudah = 5, Sedang = 10, Sulit = 15)
+                let points = 5;
+                if (currentQ.level === "Sedang") points = 10;
+                else if (currentQ.level === "Sulit") points = 15;
+                
+                score += points;
+                correctAnswersCount++;
+                qScoreDisplay.innerText = score;
+                
+                showFeedback(true, currentQ.edu);
+                triggerStarsExplosion();
+            } else {
+                playIncorrectSound();
+                selectedButton.classList.add('bg-red-500/25', 'border-red-400', 'text-red-300');
+                selectedButton.querySelector('span').classList.add('bg-red-600', 'text-white');
+                
+                optionButtons.forEach(btn => {
+                    const optionLetter = btn.querySelector('span').innerText;
+                    if (optionLetter === currentQ.answer) {
+                        btn.classList.remove('opacity-50');
+                        btn.classList.add('bg-green-500/10', 'border-green-500/60', 'text-green-300');
+                    }
+                });
+                
+                showFeedback(false, currentQ.edu);
+            }
+            
+            btnNext.disabled = false;
+        }
+
+        // JIKA WAKTU HABIS
+        function handleTimeout() {
+            hasAnswered = true;
+            playIncorrectSound();
+            
+            const optionButtons = qOptionsContainer.querySelectorAll('button');
+            optionButtons.forEach(btn => {
+                btn.disabled = true;
+                btn.classList.add('opacity-50');
+                
+                const optionLetter = btn.querySelector('span').innerText;
+                if (optionLetter === questions[currentQuestionIndex].answer) {
+                    btn.classList.remove('opacity-50');
+                    btn.classList.add('bg-green-500/10', 'border-green-500/60', 'text-green-300');
+                }
+            });
+            
+            showFeedback(false, "Waktu kamu habis! Ingat, samudra mengajarkan kita kesabaran. Mari lanjut ke soal berikutnya!");
+            btnNext.disabled = false;
+        }
+
+        // PESAN FEEDBACK
+        function showFeedback(isCorrect, eduMessage) {
+            feedbackCard.classList.remove('hidden');
+            if (isCorrect) {
+                feedbackCard.className = "transform translate-y-0 transition-all duration-300 rounded-2xl p-4 border border-green-500/40 bg-green-950/20 text-green-200 flex flex-col gap-2";
+                feedbackIcon.innerText = "⭐ Luar Biasa!";
+                feedbackTitle.innerText = "Jawabanmu Tepat Sekali!";
+            } else {
+                feedbackCard.className = "transform translate-y-0 transition-all duration-300 rounded-2xl p-4 border border-red-500/40 bg-red-950/20 text-red-200 flex flex-col gap-2";
+                feedbackIcon.innerText = "💡 Pengetahuan Sains!";
+                feedbackTitle.innerText = "Jawaban Kurang Tepat.";
+            }
+            feedbackEduMsg.innerHTML = `<strong>Fakta Edukasi:</strong> ${eduMessage}`;
+        }
+
+        // PARTIKEL BINTANG
+        function triggerStarsExplosion() {
+            for (let i = 0; i < 15; i++) {
+                const star = document.createElement('div');
+                star.innerText = "⭐";
+                star.style.position = 'absolute';
+                star.style.fontSize = `${Math.random() * 15 + 10}px`;
+                star.style.left = '50%';
+                star.style.top = '50%';
+                star.style.pointerEvents = 'none';
+                star.style.zIndex = '50';
+                star.style.transition = 'all 1s ease-out';
+                
+                qOptionsContainer.appendChild(star);
+                
+                const angle = Math.random() * Math.PI * 2;
+                const distance = Math.random() * 160 + 60;
+                const tx = Math.cos(angle) * distance;
+                const ty = Math.sin(angle) * distance;
+                
+                setTimeout(() => {
+                    star.style.transform = `translate(${tx}px, ${ty}px) rotate(${Math.random() * 360}deg)`;
+                    star.style.opacity = '0';
+                }, 50);
+                
+                setTimeout(() => { star.remove(); }, 1050);
+            }
+        }
+
+        // AKHIR GAME / HASIL
+        function finishGame() {
+            clearInterval(timer);
+            stopAmbientSea();
+            playVictorySound();
+            
+            sectionQuiz.classList.add('hidden');
+            sectionResult.classList.remove('hidden');
+            
+            resPlayerName.innerText = playerName;
+            resFinalScore.innerText = score;
+            resFinalCorrect.innerText = `${correctAnswersCount} / 20 Soal`;
+            
+            const accuracy = Math.round((correctAnswersCount / 20) * 100);
+            resFinalAccuracy.innerText = `${accuracy}%`;
+            
+            // Penentuan Pangkat & Emblem Penyelam
+            let diverBadge = "";
+            let badgeIcon = "";
+            let starsCount = 1;
+
+            if (score >= 170) {
+                diverBadge = "Pelindung Agung Samudra 👑";
+                badgeIcon = "🐬";
+                starsCount = 3;
+            } else if (score >= 100) {
+                diverBadge = "Penjelajah Terumbu Karang 🐠";
+                badgeIcon = "🤿";
+                starsCount = 2;
+            } else {
+                diverBadge = "Penyelam Pemula 🌊";
+                badgeIcon = "🦐";
+                starsCount = 1;
+            }
+
+            badgeTitle.innerText = diverBadge;
+            badgeEmblem.innerText = badgeIcon;
+
+            // Render Bintang
+            resStarsContainer.innerHTML = '';
+            for (let i = 0; i < 3; i++) {
+                const starSpan = document.createElement('span');
+                starSpan.className = "animate-bounce text-4xl md:text-5xl";
+                starSpan.style.animationDelay = `${i * 0.15}s`;
+                if (i < starsCount) {
+                    starSpan.innerText = "⭐";
+                } else {
+                    starSpan.innerText = "★";
+                    starSpan.classList.add('text-gray-600');
+                }
+                resStarsContainer.appendChild(starSpan);
+            }
+            
+            saveScoreToLeaderboard(playerName, score);
+        }
+
+        // COPY TO CLIPBOARD (Fungsi untuk Bagikan Prestasi)
+        function shareScore() {
+            const accuracy = Math.round((correctAnswersCount / 20) * 100);
+            let diverBadge = "Penyelam Pemula 🌊";
+            if (score >= 170) diverBadge = "Pelindung Agung Samudra 👑";
+            else if (score >= 100) diverBadge = "Penjelajah Terumbu Karang 🐠";
+
+            const shareText = `🌊 KUIS IPA BAWAH LAUT 2.0 🌊\n` +
+                              `Penyelam: ${playerName}\n` +
+                              `Skor Akhir: ${score} Poin\n` +
+                              `Akurasi: ${accuracy}%\n` +
+                              `Pangkat: ${diverBadge}\n\n` +
+                              `Yuk uji pengetahuan lautmu dan jadilah pahlawan kelautan berikutnya! 🐬🌟`;
+
+            // Membuat input sementara untuk disalin
+            const tempInput = document.createElement('textarea');
+            tempInput.value = shareText;
+            document.body.appendChild(tempInput);
+            tempInput.select();
+            document.execCommand('copy');
+            document.body.removeChild(tempInput);
+
+            // Tampilkan Notifikasi Toast
+            toast.style.opacity = '1';
+            setTimeout(() => {
+                toast.style.opacity = '0';
+            }, 3000);
+        }
+
+        // RESET GAME
+        function restartGame() {
+            currentQuestionIndex = 0;
+            score = 0;
+            correctAnswersCount = 0;
+            qScoreDisplay.innerText = "0";
+            sectionResult.classList.add('hidden');
+            sectionQuiz.classList.remove('hidden');
+            startAmbientSea();
+            loadQuestion();
+        }
+
+        // EVENT LISTENERS
+        btnStart.addEventListener('click', () => {
+            getAudioContext();
+            const nameInput = inputPlayerName.value.trim();
+            if (nameInput) {
+                playerName = nameInput;
+            } else {
+                playerName = "Penyelam Tangguh";
+            }
+            
+            sectionMenu.classList.add('hidden');
+            sectionQuiz.classList.remove('hidden');
+            startAmbientSea();
+            loadQuestion();
+        });
+
+        btnNext.addEventListener('click', () => {
+            currentQuestionIndex++;
+            if (currentQuestionIndex < questions.length) {
+                loadQuestion();
+            } else {
+                finishGame();
+            }
+        });
+
+        btnRestart.addEventListener('click', restartGame);
+        btnShare.addEventListener('click', shareScore);
+        
+        btnBackMenu.addEventListener('click', () => {
+            sectionResult.classList.add('hidden');
+            sectionMenu.classList.remove('hidden');
+            stopAmbientSea();
+            updateLeaderboard();
+            // Kembalikan latar belakang awal
+            gameBody.style.background = "linear-gradient(180deg, #1e40af 0%, #1e3a8a 50%, #0f172a 100%)";
+        });
+
+        // Toggle Suara Musik & Efek
+        btnSound.addEventListener('click', () => {
+            isSoundOn = !isSoundOn;
+            if (isSoundOn) {
+                btnSound.className = "p-2.5 bg-blue-800 hover:bg-blue-700 active:scale-95 rounded-xl border border-blue-600 text-white transition-all shadow-md flex items-center gap-1.5 text-xs md:text-sm font-semibold";
+                btnSound.innerHTML = `<span id="sound-icon">🔊</span> Musik & Efek: ON`;
+                getAudioContext();
+                if (currentQuestionIndex < questions.length && !sectionQuiz.classList.contains('hidden')) {
+                    startAmbientSea();
+                }
+            } else {
+                btnSound.className = "p-2.5 bg-slate-800 hover:bg-slate-700 active:scale-95 rounded-xl border border-slate-600 text-slate-400 transition-all shadow-md flex items-center gap-1.5 text-xs md:text-sm font-semibold";
+                btnSound.innerHTML = `<span id="sound-icon">🔇</span> Musik & Efek: OFF`;
+                stopAmbientSea();
+            }
+        });
+
+        window.onload = () => {
+            updateLeaderboard();
+        };
+    </script>
+</body>
+</html>
